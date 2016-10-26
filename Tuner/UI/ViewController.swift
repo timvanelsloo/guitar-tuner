@@ -26,13 +26,13 @@ import UIKit
 class ViewController: UIViewController, TunerDelegate {
     let tuner       = Tuner()
     let displayView = DisplayView()
-    let knobView    = KnobView(frame: CGRectMake(0, 0, 245, 245))
+    let knobView    = KnobView(frame: CGRect(x: 0, y: 0, width: 245, height: 245))
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         /* Update the background color. */
-        self.view.backgroundColor = .blackColor()
+        self.view.backgroundColor = UIColor.black;
 
         /* Setup the display view. */
         displayView.frame = CGRect(
@@ -55,11 +55,11 @@ class ViewController: UIViewController, TunerDelegate {
         tuner.startMonitoring()
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 
-    func tunerDidMeasurePitch(pitch: Pitch, withDistance distance: Double,
+    func tunerDidMeasurePitch(_ pitch: Pitch, withDistance distance: Double,
                               amplitude: Double) {
         /* Scale the amplitude to make it look more dramatic. */
         displayView.amplitude = min(1.0, amplitude * 25.0)

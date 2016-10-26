@@ -32,33 +32,33 @@ enum Accidental: String {
 }
 
 enum Note: CustomStringConvertible {
-    case C(_: Accidental?)
-    case D(_: Accidental?)
-    case E(_: Accidental?)
-    case F(_: Accidental?)
-    case G(_: Accidental?)
-    case A(_: Accidental?)
-    case B(_: Accidental?)
+    case c(_: Accidental?)
+    case d(_: Accidental?)
+    case e(_: Accidental?)
+    case f(_: Accidental?)
+    case g(_: Accidental?)
+    case a(_: Accidental?)
+    case b(_: Accidental?)
 
     /**
      * This array contains all notes.
      */
     static let all: [Note] = [
-            C(nil),   C(.Sharp),
-            D(nil),
-            E(.Flat), E(nil),
-            F(nil),   F(.Sharp),
-            G(nil),
-            A(.Flat), A(nil),
-            B(.Flat), B(nil)
+            c(nil),   c(.Sharp),
+            d(nil),
+            e(.Flat), e(nil),
+            f(nil),   f(.Sharp),
+            g(nil),
+            a(.Flat), a(nil),
+            b(.Flat), b(nil)
      ]
 
     /**
      * This function returns the frequency of this note in the 4th octave.
      */
     var frequency: Double {
-        let index = Note.all.indexOf({ $0 == self   })! -
-                    Note.all.indexOf({ $0 == A(nil) })!
+        let index = Note.all.index(where: { $0 == self   })! -
+                    Note.all.index(where: { $0 == Note.a(nil) })!
 
         return 440 * pow(2, Double(index) / 12.0)
     }
@@ -73,13 +73,13 @@ enum Note: CustomStringConvertible {
         }
 
         switch self {
-            case let C(a): return concat("C", a)
-            case let D(a): return concat("D", a)
-            case let E(a): return concat("E", a)
-            case let F(a): return concat("F", a)
-            case let G(a): return concat("G", a)
-            case let A(a): return concat("A", a)
-            case let B(a): return concat("B", a)
+            case let .c(a): return concat("C", a)
+            case let .d(a): return concat("D", a)
+            case let .e(a): return concat("E", a)
+            case let .f(a): return concat("F", a)
+            case let .g(a): return concat("G", a)
+            case let .a(a): return concat("A", a)
+            case let .b(a): return concat("B", a)
         }
     }
 }

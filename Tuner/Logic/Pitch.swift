@@ -39,7 +39,7 @@ class Pitch: CustomStringConvertible {
      */
     let frequency: Double
 
-    private init(note: Note, octave: Int) {
+    fileprivate init(note: Note, octave: Int) {
         self.note      = note
         self.octave    = octave
         self.frequency = note.frequency * pow(2, Double(octave) - 4)
@@ -54,12 +54,12 @@ class Pitch: CustomStringConvertible {
         Note.all.map { note -> Pitch in
             Pitch(note: note, octave: octave)
         }
-    }.flatten())
+    }.joined())
 
     /**
      * This function returns the nearest pitch to the given frequency in Hz.
      */
-    class func nearest(frequency: Double) -> Pitch {
+    class func nearest(_ frequency: Double) -> Pitch {
         /* Map all pitches to tuples of the pitch and the distance between the
          * frequency for that pitch and the given frequency. */
         var results = all.map { pitch -> (pitch: Pitch, distance: Double) in
@@ -67,7 +67,7 @@ class Pitch: CustomStringConvertible {
         }
 
         /* Sort array based on distance. */
-        results.sortInPlace { $0.distance < $1.distance }
+        results.sort { $0.distance < $1.distance }
 
         /* Return the first result (i.e. nearest pitch). */
         return results.first!.pitch
@@ -97,7 +97,7 @@ func ==(a: Pitch, b: Pitch) -> Bool {
  */
 func +(pitch: Pitch, offset: Int) -> Pitch {
     let all   = Pitch.all
-    let index = all.indexOf({ $0 == pitch })! + offset
+    let index = all.index(where: { $0 == pitch })! + offset
 
     return all[(index % all.count + all.count) % all.count]
 }
