@@ -30,7 +30,7 @@ protocol TunerDelegate {
      * distance is between the actual tracked frequency and the nearest note.
      * Finally, the amplitude is the volume (note: of all frequencies).
      */
-    func tunerDidMeasurePitch(pitch: Pitch, withDistance distance: Double,
+    func tunerDidMeasurePitch(_ pitch: Pitch, withDistance distance: Double,
                               amplitude: Double)
 }
 
@@ -38,21 +38,21 @@ class Tuner: NSObject {
     var delegate: TunerDelegate?
 
     /* Private instance variables. */
-    private var timer:      NSTimer?
-    private let microphone: AKMicrophone
-    private let analyzer:   AKAudioAnalyzer
+    fileprivate var timer:      Timer?
+    fileprivate let microphone: AKMicrophone
+    fileprivate let analyzer:   AKAudioAnalyzer
 
     override init() {
         /* Start application-wide microphone recording. */
-        AKManager.sharedManager().enableAudioInput()
+        AKManager.shared().enableAudioInput()
 
         /* Add the built-in microphone. */
         microphone = AKMicrophone()
-        AKOrchestra.addInstrument(microphone)
+        AKOrchestra.add(microphone)
 
         /* Add an analyzer and store it in an instance variable. */
         analyzer = AKAudioAnalyzer(input: microphone.output)
-        AKOrchestra.addInstrument(analyzer)
+        AKOrchestra.add(analyzer)
     }
 
     func startMonitoring() {
@@ -61,8 +61,8 @@ class Tuner: NSObject {
         microphone.play()
 
         /* Initialize and schedule a new run loop timer. */
-        timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self,
-                                                       selector: "tick",
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self,
+                                                       selector: #selector(Tuner.tick),
                                                        userInfo: nil,
                                                        repeats: true)
     }

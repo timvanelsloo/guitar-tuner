@@ -165,6 +165,7 @@
 				TargetAttributes = {
 					22178DAD1C4D687E001B61AB = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -381,6 +382,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.timvanelsloo.Tuner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -397,6 +399,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.timvanelsloo.Tuner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

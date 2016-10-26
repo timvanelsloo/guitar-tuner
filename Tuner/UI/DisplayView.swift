@@ -23,8 +23,8 @@
 import UIKit
 
 class DisplayView: UIView {
-    private let gradientLayer = CAGradientLayer()
-    private let plotView =      PlotView()
+    fileprivate let gradientLayer = CAGradientLayer()
+    fileprivate let plotView =      PlotView()
     
     var amplitude: Double = 0.0 {
         didSet {
@@ -41,15 +41,15 @@ class DisplayView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        plotView.autoresizingMask = [ .FlexibleWidth, .FlexibleHeight ]
+        plotView.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
         plotView.frame = self.bounds
         self.addSubview(plotView)
         
-        gradientLayer.colors     = [ UIColor.clearColor().CGColor,
-                                     UIColor.blackColor().CGColor,
-                                     UIColor.clearColor().CGColor ]
-        gradientLayer.startPoint = CGPointZero
-        gradientLayer.endPoint   = CGPointMake(1.0, 0.0)
+        gradientLayer.colors     = [ UIColor.clear.cgColor,
+                                     UIColor.black.cgColor,
+                                     UIColor.clear.cgColor ]
+        gradientLayer.startPoint = CGPoint.zero
+        gradientLayer.endPoint   = CGPoint(x: 1.0, y: 0.0)
         self.layer.mask = gradientLayer
     }
     
@@ -57,11 +57,11 @@ class DisplayView: UIView {
         super.init(coder: aDecoder)
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
         let maskLayer = CAShapeLayer()
-        maskLayer.path      = UIBezierPath(ovalInRect: self.bounds).CGPath
+        maskLayer.path      = UIBezierPath(ovalIn: self.bounds).cgPath
         gradientLayer.frame = self.bounds
         gradientLayer.mask  = maskLayer
     }

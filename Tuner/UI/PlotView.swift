@@ -34,11 +34,14 @@ class AudioPlot: AKAudioPlot {
 
     var time:          Double = 0.0
 
-    override func bufferWithCsound(cs: CsoundObj) -> NSData {
+    override func buffer(withCsound cs: CsoundObj) -> Data {
         let length    = Int(AKSettings.shared().numberOfChannels) *
                         Int(AKSettings.shared().samplesPerControlPeriod) * 4
         let num       = length / 4
-        let floats    = UnsafeMutablePointer<Float>(malloc(length))
+//        var floats    = UnsafeMutableRawPointer(malloc(length))
+        var floats    = UnsafeMutableRawPointer.allocate(bytes: num-1, alignedTo: 1)
+        floats.initializeMemory(as: Float.self, count: num-1, to: 1)
+//        floats.initializeMemory(as: Float.self, at: length, count:length, to: 1)
 
         /* The phase and amplitude are different for each line to get a nice
          * gimmick. */
@@ -54,14 +57,22 @@ class AudioPlot: AKAudioPlot {
              * frequency change. */
             var t = (time + Double(i) / Double(num) * self.frequency + phase)
 
-            floats[i] = Float(sin(t * 2 * 3.14))
-
+//            floats[i] = Float(sin(t * 2 * 3.14))
+            var v = Float(sin(t * 2 * 3.14))
+            floats.storeBytes(of: v, toByteOffset: i, as: Float.self)
+//            floats.storeBytes(of: v, as: Float.self)
+            
             /* It is multiplied with a "regular" 0.5 Hz sine to get both ends
              * to fade out nicely. It's sort of a simplistic window function. */
             t = Double(i) / Double(num)
-            floats[i] *= Float(sin(t * 1 * 3.14) * amplitude)
-            floats[i] *= 1 - pow(1 - Float(i) / Float(num), 2.0)
-
+//            floats[i] *= Float(sin(t * 1 * 3.14) * amplitude)
+            v *= Float(sin(t * 1 * 3.14) * amplitude)
+            floats.storeBytes(of: v, toByteOffset: i, as: Float.self)
+//            floats.storeBytes(of: v, as: Float.self)
+            //            floats[i] *= 1 - pow(1 - Float(i) / Float(num), 2.0)
+            v *= 1 - pow(1 - Float(i) / Float(num), 2.0)
+            floats.storeBytes(of: v, toByteOffset: i, as: Float.self)
+//            floats.storeBytes(of: v, as: Float.self)
             time += self.frequency / 44100 / 2
 
             /* Fade smoothly to the next frequency and amplitude. */
@@ -73,7 +84,7 @@ class AudioPlot: AKAudioPlot {
          * loses the necessary precision. */
         time = fmod(time, 1.0)
 
-        return NSData(bytesNoCopy: floats, length: length)
+        return Data(bytesNoCopy: &floats, count: length, deallocator: .free)
     }
 }
 
@@ -94,16 +105,16 @@ class PlotView: UIView {
         }
     }
 
-    private let plots = (0 ... 4).map { _ in AudioPlot() }
+    fileprivate let plots = (0 ... 4).map { _ in AudioPlot() }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         /* Setup the all plots. */
         for i in 0 ... 4 {
-            plots[i].autoresizingMask = [ .FlexibleWidth, .FlexibleHeight ]
-            plots[i].backgroundColor  = .clearColor()
-            plots[i].lineColor        = .whiteColor()
+            plots[i].autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
+            plots[i].backgroundColor  = UIColor.clear;
+            plots[i].lineColor        = UIColor.white;
             plots[i].lineWidth        = 1.0
             plots[i].frequency        = 0.0
             plots[i].amplifier        = abs(1.0 - Double(i) * 0.4) * (i % 2 == 0 ? 1.0 : -1.0)
